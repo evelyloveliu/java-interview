@@ -19,7 +19,22 @@ MySQL特点：
 总结一下：  
 MongoDB 的适用场景为：数据不是特别重要（例如通知，推送这些），数据表结构变化较为频繁，数据量特别大，数据的并发性特别高，数据结构比较特别（例如地图的位置坐标），这些情况下用 MongoDB ， 其他情况就还是用 MySQL ，这样组合使用就可以达到最大的效率  
 **6.Redis多路IO复用**  
-https://blog.csdn.net/u014590757/article/details/79860766
+https://blog.csdn.net/u014590757/article/details/79860766  
+**7.JAVA代理模式**  
+1）静态代理：静态代理需要代理类与实现类实现相同的接口，需要手动编码  
+2）JDK动态代理：  
+DK动态代理基于拦截器和反射来实现。JDK代理是不需要第三方库支持的，只需要JDK环境就可以进行代理，使用条件：  
+1）必须实现InvocationHandler接口；  
+2）使用Proxy.newProxyInstance产生代理对象；  
+3）被代理的对象必须要实现接口；  
+JDK动态代理通过生成代理对象的接口，将InvocationHandler的实现替换被代理类的实现，实现补充或增强  
+CGLIB动态代理：  
+CGLIB(Code Generation Library)是一个开源项目！是一个强大的，高性能，高质量的Code生成类库，
+它可以在运行期扩展Java类与实现Java接口。Hibernate用它来实现PO(Persistent Object 持久化对象)字节码的动态生成。
+CCGLIB是一个强大的高性能的代码生成包。它广泛的被许多AOP的框架使用，例如Spring AOP为他们提供
+方法的interception（拦截）。CGLIB包的底层是通过使用一个小而快的字节码处理框架ASM，来转换字节码并生成新的类。
+CCGLIB是通过继承被代理类，将MethodInterceptor代理织入父类调用前后实现增强或者补充。所以CCGLIB不需要被代理类实现接口。  
+
 
 
 
