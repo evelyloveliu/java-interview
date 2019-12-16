@@ -285,3 +285,78 @@ public final boolean release(int arg) {
             return false;
         }
 ```
+4）ReentrantLock,CountDownLatch,Semaphore,CyclicBarrie原理
+ReentrantLock为独占锁,CountDownLatch,Semaphore,CyclicBarrie为共享锁，ReentrantLock,CountDownLatch,Semaphore都是基于AQS中state的获取和等待队列实现的，CyclicBarrie基于ReentrantLock和ConditionObject实现
+CyclicBarrie核心功能代码：
+```java
+private int dowait(boolean timed, long nanos)
+        throws InterruptedException, BrokenBarrierException,
+               TimeoutException {
+        final ReentrantLock lock = this.lock;
+        lock.lock();
+        try {
+            final Generation g = generation;
+
+            if (g.broken)
+                throw new BrokenBarrierException();
+
+            if (Thread.interrupted()) {
+                breakBarrier();
+                throw new InterruptedException();
+            }
+
+            int index = --count;
+          
+            if (index == 0) {  // tripped
+                boolean ranAction = false;
+                try {
+                  //index=0表示到达突破点可以执行CyclicBarrie的后续任务
+                    final Runnable command = barrierCommand;
+                    if (command != null)
+                        command.run();
+                    ranAction = true;
+                    //唤醒条件队列中的所有等待线程
+                    nextGeneration();
+                    return 0;
+                } finally {
+                    if (!ranAction)
+                        breakBarrier();
+                }
+            }
+
+            // loop until tripped, broken, interrupted, or timed out
+            //没有到达突破点则利用条件队列阻塞该线程，然后释放锁
+            for (;;) {
+                try {
+                    if (!timed)
+                        trip.await();
+                    else if (nanos > 0L)
+                        nanos = trip.awaitNanos(nanos);
+                } catch (InterruptedException ie) {
+                    if (g == generation && ! g.broken) {
+                        breakBarrier();
+                        throw ie;
+                    } else {
+                        // We're about to finish waiting even if we had not
+                        // been interrupted, so this interrupt is deemed to
+                        // "belong" to subsequent execution.
+                        Thread.currentThread().interrupt();
+                    }
+                }
+
+                if (g.broken)
+                    throw new BrokenBarrierException();
+
+                if (g != generation)
+                    return index;
+
+                if (timed && nanos <= 0L) {
+                    breakBarrier();
+                    throw new TimeoutException();
+                }
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
+```
