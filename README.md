@@ -23,7 +23,7 @@ https://blog.csdn.net/u014590757/article/details/79860766
 **7.JAVA代理模式**  
 1）静态代理：静态代理需要代理类与实现类实现相同的接口，需要手动编码  
 2）JDK动态代理：  
-DK动态代理基于拦截器和反射来实现。JDK代理是不需要第三方库支持的，只需要JDK环境就可以进行代理，使用条件：  
+JDK动态代理基于拦截器和反射来实现。JDK代理是不需要第三方库支持的，只需要JDK环境就可以进行代理，使用条件：  
 1）必须实现InvocationHandler接口；  
 2）使用Proxy.newProxyInstance产生代理对象；  
 3）被代理的对象必须要实现接口；  
@@ -227,4 +227,61 @@ public final boolean release(int arg) {
     }
 
 ```
-
+3）AQS的公平锁和非公平锁的实现
+主要在于继承AQS的类在实现tryAccquire方法时是否判断队列里有等待线程
+```java
+ public final boolean hasQueuedPredecessors() {
+        // The correctness of this depends on head being initialized
+        // before tail and on head.next being accurate if the current
+        // thread is first in queue.
+        Node t = tail; // Read fields in reverse initialization order
+        Node h = head;
+        Node s;
+        return h != t &&
+            ((s = h.next) == null || s.thread != Thread.currentThread());
+    }
+```
+例如ReentrantLock中
+```java
+ protected final boolean tryAcquire(int acquires) {
+            final Thread current = Thread.currentThread();
+            int c = getState();
+            if (c == 0) {
+            //判断是否有等待队列 所以这是公平锁
+                if (!hasQueuedPredecessors() &&
+                    compareAndSetState(0, acquires)) {
+                    setExclusiveOwnerThread(current);
+                    return true;
+                }
+            }
+            else if (current == getExclusiveOwnerThread()) {
+                int nextc = c + acquires;
+                if (nextc < 0)
+                    throw new Error("Maximum lock count exceeded");
+                setState(nextc);
+                return true;
+            }
+            return false;
+        }
+    }
+    
+    final boolean nonfairTryAcquire(int acquires) {
+            final Thread current = Thread.currentThread();
+            int c = getState();
+            if (c == 0) {
+               //没有判断等待队列 直接尝试获取锁，这是非公平锁
+                if (compareAndSetState(0, acquires)) {
+                    setExclusiveOwnerThread(current);
+                    return true;
+                }
+            }
+            else if (current == getExclusiveOwnerThread()) {
+                int nextc = c + acquires;
+                if (nextc < 0) // overflow
+                    throw new Error("Maximum lock count exceeded");
+                setState(nextc);
+                return true;
+            }
+            return false;
+        }
+```
