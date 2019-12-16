@@ -67,10 +67,36 @@ AQS主要实现逻辑在acquire，release，acquireShared，releaseShared中
  public final void acquire(int arg) {  
   //尝试获取锁（不同锁的实现tryAcquire不一样，这取决于继承者想实现什么样的锁）  
         if (!tryAcquire(arg) &&  
-            //addWatiter将当前线程加入Node队列的队尾，然后accquireQueued中如果前置节点为头节点会先再次尝试通过tryAcquire获取锁，获取失败后，挂起线程，返回中断标识
+            //addWatiter将当前线程加入Node队列的队尾，然后accquireQueued中如果前置节点为头节点会先再次尝试通过tryAcquire获取锁，获取失败后，挂起线程，返回中断标识，获取成功则将当前节点设置为头节点
             acquireQueued(addWaiter(Node.EXCLUSIVE), arg))  
             selfInterrupt();  
     }
+    
+     final boolean acquireQueued(final Node node, int arg) {
+        boolean failed = true;
+        try {
+            boolean interrupted = false;
+            //自旋处理 获取不到锁则挂起线程，等待前置节点为头节点且释放锁时唤醒该线程
+            for (;;) {
+                final Node p = node.predecessor();
+                if (p == head && tryAcquire(arg)) {
+                    //获取到锁表明前置节点已经释放锁，设置当前节点为头节点
+                    setHead(node);
+                    p.next = null; // help GC
+                    failed = false;
+                    return interrupted;
+                }
+                //未获取到锁则将线程挂起
+                if (shouldParkAfterFailedAcquire(p, node) &&
+                    parkAndCheckInterrupt())
+                    interrupted = true;
+            }
+        } finally {
+            if (failed)
+                cancelAcquire(node);
+        }
+    }
+    
 ```
 ```java
 //独占锁释放锁实现
@@ -79,11 +105,40 @@ public final boolean release(int arg) {
         if (tryRelease(arg)) {
             Node h = head;
             if (h != null && h.waitStatus != 0)
-                //取出头结点然后唤醒头结点的下个节点（头结点为哨兵节点）
+                //当前节点是头节点获取了锁，在释放时要唤醒头结点的下一个节点，让其尝试获取锁，在下一个节点获取到锁的时候，当前节点出AQS队列
                 unparkSuccessor(h);
             return true;
         }
         return false;
     }
+    
+    private void unparkSuccessor(Node node) {
+        /*
+         * If status is negative (i.e., possibly needing signal) try
+         * to clear in anticipation of signalling.  It is OK if this
+         * fails or if status is changed by waiting thread.
+         */
+        int ws = node.waitStatus;
+        if (ws < 0)
+            compareAndSetWaitStatus(node, ws, 0);
+
+        /*
+         * Thread to unpark is held in successor, which is normally
+         * just the next node.  But if cancelled or apparently null,
+         * traverse backwards from tail to find the actual
+         * non-cancelled successor.
+         */
+        Node s = node.next;
+        if (s == null || s.waitStatus > 0) {
+            s = null;
+            for (Node t = tail; t != null && t != node; t = t.prev)
+                if (t.waitStatus <= 0)
+                    s = t;
+        }
+        if (s != null)
+        //唤醒下一个节点让其获取锁
+            LockSupport.unpark(s.thread);
+    }
+    
 ```
 
