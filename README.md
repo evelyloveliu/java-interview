@@ -55,7 +55,10 @@ InnoDB普通索引的叶子节点存储主键值（即非聚集索引叶子节�
 重量级锁：监视器锁本质又是依赖于底层的操作系统的Mutex Lock来实现的。而操作系统实现线程之间的切换这就需要从用户态转换到核心态，这个成本非常高，状态之间的转换需要相对比较长的时间，这就是为什么Synchronized效率低的原因。JDK1.6的优化就是尽量避免Synchronized运行时锁升级到重量级锁  
 一篇关于Synchronized原理的文章：https://juejin.im/post/5b4eec7df265da0fa00a118f#heading-14  
 
-**10.对AQS以及线程池的理解**    
-
+**10.对AQS以及线程池的理解**  
+1）AQS的主要结构  
+AQS包含了一个FIFO的双向队列Node，状态等待队列ConditionObject（每个ConditionObject代表一个状态条件，相同等待条件的线程将进入同一个ConditionObejct队列等待被唤醒。ConditionObjet中的await,notify，notifyAll与Synchronized中的await,notify,notifyAll相同点是都需要先获取到同步资源后才能调用使用相关API，区别在于Synchronized一个资源相当于一个条件，但是AQS的每个锁都可以拥有多个ConditionObject即一个锁可以设置多个条件），状态同步变量state（在ReentrantLock中state表示同步状态和重入次数，在ReenntrantWriteLock中高16位标识读状态,低16位标识写状态，在CoundownLatch和CyclicBarrier中state表示的是计数器当前的值，在Semaphore中表示当前信号量的个数）;  
+2）AQS设计思想  
+AQS使用模板模式，定义了一套同步状态资源的操作模板，对继承者来说值需要实现tryAcquire，tryRelease，tryAcquireShared，tryReleaseShared，isHeldExclusively以及定义state的含义即可实现自己的锁。
 
 
