@@ -59,6 +59,15 @@ InnoDB普通索引的叶子节点存储主键值（即非聚集索引叶子节�
 1）AQS的主要结构  
 AQS包含了一个FIFO的双向队列Node，状态等待队列ConditionObject（每个ConditionObject代表一个状态条件，相同等待条件的线程将进入同一个ConditionObejct队列等待被唤醒。ConditionObjet中的await,notify，notifyAll与Synchronized中的await,notify,notifyAll相同点是都需要先获取到同步资源后才能调用使用相关API，区别在于Synchronized一个资源相当于一个条件，但是AQS的每个锁都可以拥有多个ConditionObject即一个锁可以设置多个条件），状态同步变量state（在ReentrantLock中state表示同步状态和重入次数，在ReenntrantWriteLock中高16位标识读状态,低16位标识写状态，在CoundownLatch和CyclicBarrier中state表示的是计数器当前的值，在Semaphore中表示当前信号量的个数）;  
 2）AQS设计思想  
-AQS使用模板模式，定义了一套同步状态资源的操作模板，对继承者来说值需要实现tryAcquire，tryRelease，tryAcquireShared，tryReleaseShared，isHeldExclusively以及定义state的含义即可实现自己的锁。
+AQS使用模板模式，定义了一套同步状态资源的操作模板，对继承者来说值需要实现tryAcquire，tryRelease，tryAcquireShared，tryReleaseShared，isHeldExclusively以及定义state的含义即可实现自己的锁。  
 
+AQS主要实现逻辑在acquire，release，acquireShared，releaseShared中  
+//独占锁实现
+ public final void acquire(int arg) {  
+  //尝试获取锁（不同锁的实现tryAcquire不一样，这取决于继承者想实现什么样的锁）  
+        if (!tryAcquire(arg) &&  
+            //addWatiter将当前线程加入Node队列的队尾，然后accquireQueued中如果前置节点为头节点会先再次尝试通过tryAcquire获取锁，获取失败后，挂起线程，返回中断标识
+            acquireQueued(addWaiter(Node.EXCLUSIVE), arg))  
+            selfInterrupt();  
+    }
 
