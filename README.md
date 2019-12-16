@@ -79,7 +79,7 @@ public final boolean release(int arg) {
         if (tryRelease(arg)) {
             Node h = head;
             if (h != null && h.waitStatus != 0)
-                //取出头结点然后唤醒已经挂起的头结点线程
+                //取出头结点然后唤醒头结点的下个节点（头结点为哨兵节点）
                 unparkSuccessor(h);
             return true;
         }
