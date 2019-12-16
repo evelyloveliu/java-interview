@@ -62,6 +62,7 @@ AQS包含了一个FIFO的双向队列Node，状态等待队列ConditionObject（
 AQS使用模板模式，定义了一套同步状态资源的操作模板，对继承者来说值需要实现tryAcquire，tryRelease，tryAcquireShared，tryReleaseShared，isHeldExclusively以及定义state的含义即可实现自己的锁。  
 
 AQS主要实现逻辑在acquire，release，acquireShared，releaseShared中  
+```java
 //独占锁实现
  public final void acquire(int arg) {  
   //尝试获取锁（不同锁的实现tryAcquire不一样，这取决于继承者想实现什么样的锁）  
@@ -70,4 +71,5 @@ AQS主要实现逻辑在acquire，release，acquireShared，releaseShared中
             acquireQueued(addWaiter(Node.EXCLUSIVE), arg))  
             selfInterrupt();  
     }
+```
 
