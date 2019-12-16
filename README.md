@@ -67,7 +67,9 @@ AQS主要实现逻辑在acquire，release，acquireShared，releaseShared中
  public final void acquire(int arg) {  
   //尝试获取锁（不同锁的实现tryAcquire不一样，这取决于继承者想实现什么样的锁）  
         if (!tryAcquire(arg) &&  
-            //addWatiter将当前线程加入Node队列的队尾，然后accquireQueued中如果前置节点为头节点会先再次尝试通过tryAcquire获取锁，获取失败后，挂起线程，返回中断标识，获取成功则将当前节点设置为头节点
+            //addWatiter将当前线程加入Node队列的队尾，
+            //然后accquireQueued中如果前置节点为头节点会先再次尝试通过tryAcquire获取锁，获取失败后，
+            //挂起线程，返回中断标识，获取成功则将当前节点设置为头节点
             acquireQueued(addWaiter(Node.EXCLUSIVE), arg))  
             selfInterrupt();  
     }
@@ -105,7 +107,8 @@ public final boolean release(int arg) {
         if (tryRelease(arg)) {
             Node h = head;
             if (h != null && h.waitStatus != 0)
-                //当前节点是头节点获取了锁，在释放时要唤醒头结点的下一个节点，让其尝试获取锁，在下一个节点获取到锁的时候，当前节点出AQS队列
+                //当前节点是头节点获取了锁，在释放时要唤醒头结点的下一个节点，让其尝试获取锁，
+                //在下一个节点获取到锁的时候，当前节点出AQS队列
                 unparkSuccessor(h);
             return true;
         }
