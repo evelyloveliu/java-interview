@@ -529,3 +529,70 @@ public void execute(Runnable command) {
         }
     }
 ```
+6)ScheduledThreadPoolExecutor主要实现原理  
+ScheduledThreadPoolExecutor基于DelayedWorkQueue实现，DelayedWorkQueue类似DelayQueue核心代码如下
+```java
+ public boolean offer(E e) {
+        final ReentrantLock lock = this.lock;
+        lock.lock();
+        try {
+            q.offer(e);
+            //判断新加入节点是不是头节点，如果是头节点则要通知已经获取头节点且await的线程
+            //,重新获取头结点或者是当前队列为空，通知等待任务的线程获取任务
+            if (q.peek() == e) {
+                leader = null;
+                available.signal();
+            }
+            return true;
+        } finally {
+            lock.unlock();
+        }
+    }
+    
+    
+    public E take() throws InterruptedException {
+        final ReentrantLock lock = this.lock;
+        lock.lockInterruptibly();
+        try {
+            //自旋进入，leader线程挂起延迟时间后，在第二次循环将头结点取出
+            //其他线程在头节点未取出头结点之前，都是挂起状态
+            for (;;) {
+                //获取头结点
+                E first = q.peek();
+                if (first == null)
+                   //队列中没有任务，无限await，等待通知
+                    available.await();
+                else {
+                    long delay = first.getDelay(NANOSECONDS);
+                    //计算延迟，小于0则直接取出头结点
+                    if (delay <= 0)
+                        return q.poll();
+                    first = null; // don't retain ref while waiting
+                    //如果leader线程不为空，说明已经有线程获取到头节点且出于await状态，
+                    //所以当前线程要无限等待，等待leader执行完毕
+                    if (leader != null)
+                        available.await();
+                    else {
+                        //如果leader线程为空，表明当前线程获取到了头结点任务，设置当前线程为leader线程
+                        //同时await延迟时间挂起
+                        Thread thisThread = Thread.currentThread();
+                        leader = thisThread;
+                        try {
+                            available.awaitNanos(delay);
+                        } finally {
+                            if (leader == thisThread)
+                                //头节点的leader线程执行await结束，下一个循环将取出头节点任务执行，这里提前将leader线程设为null
+                                leader = null;
+                        }
+                    }
+                }
+            }
+        } finally {
+            //取出头节点后，如果队列中仍有任务，则需要通知挂起线程停止无限挂起，回去头结点
+            if (leader == null && q.peek() != null)
+                available.signal();
+            lock.unlock();
+        }
+    }
+```
+
