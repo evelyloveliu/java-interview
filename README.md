@@ -1,28 +1,3 @@
-
-Table of Contents
-=================
-
-   * [java-interview]()
-      * [<strong>1.kafka高性能架构原理分析</strong>]()
-      * [<strong>2.谈一谈Jetty 对Jetty的整体认识</strong>]()
-      * [<strong>3.详解 Eureka 缓存机制</strong>]()
-      * [<strong>4.Eureka Ribbon架构下如何实时下线服务通知调用方</strong>]()
-      * [<strong>5.MongoDB VS MySQL</strong>]()
-         * [MongoDB特点：]()
-         * [MySQL特点：]()
-      * [<strong>6.Redis多路IO复用</strong>]()
-      * [<strong>7.JAVA代理模式</strong>]()
-         * [1）静态代理：]()
-         * [2）JDK动态代理：]()
-         * [CGLIB动态代理：]()
-      * [<strong>8.MySQL索引</strong>]()
-      * [<strong>9.Synchronized实现原理以及JDK1.6的优化</strong>]()
-      * [<strong>10.对AQS以及线程池的理解</strong>]()
-      * [<strong>11.对volatile的理解</strong>]()
-      * [<strong>12.死锁</strong>]()
-
-Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
-
 # java-interview  
 ## **1.kafka高性能架构原理分析**  
 https://juejin.im/post/5cc00ac95188250a59405322  
