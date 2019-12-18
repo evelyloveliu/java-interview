@@ -1,4 +1,3 @@
-
 # java-interview  
 ## **1.kafka高性能架构原理分析**  
 https://juejin.im/post/5cc00ac95188250a59405322  
@@ -599,6 +598,9 @@ ScheduledThreadPoolExecutor基于DelayedWorkQueue实现，DelayedWorkQueue类似
         }
     }
 ```
-## **11.对volatile的理解** 
-
-[TOC]
+## **11.对volatile的理解**   
+1）可见性  
+因为在多核CPU环境下，每个CPU有自己的寄存器和缓存，所以每个线程在工作时优先读取和写入的数据均发生在CPU缓存中，也就是JVM内存模型中定义的工作内存，volatile关键字保证了所有线程都基于物理内存进行读写，也就是基于JVM内存模型的主内存。  
+2）有序性  
+volatile变量的第二个语义就是禁止指令重排。Java内存模型定义了一种线程内表现为串行的语义，即普通变量只能保证在线程内执行最终结果是正确的，不能保证执行顺序。volatile变量通过内存屏障，禁止重排序时把后面的指令重排到内存屏障之前，从而保证有序性。  
+## **12.jdk命令行工具**
