@@ -582,6 +582,8 @@ ScheduledThreadPoolExecutor基于DelayedWorkQueue实现，DelayedWorkQueue类似
                         } finally {
                             if (leader == thisThread)
                                 //头节点的leader线程执行await结束，下一个循环将取出头节点任务执行，这里提前将leader线程设为null
+                                //或者在leader线程挂起的过程中，产生了新的头结点，新的头结点将唤醒leader线程，所以这里要将leader设为null，
+                                //当前线程重新竞争leader线程
                                 leader = null;
                         }
                     }
