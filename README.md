@@ -19,9 +19,8 @@ Table of Contents
       * [<strong>9.Synchronized实现原理以及JDK1.6的优化</strong>]()
       * [<strong>10.对AQS以及线程池的理解</strong>]()
       * [<strong>11.对volatile的理解</strong>]()
-      * [<strong>12.jdk命令行工具</strong>]()
+      * [<strong>12.死锁</strong>]()
 
-Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
 
 
 # java-interview  
@@ -629,4 +628,9 @@ ScheduledThreadPoolExecutor基于DelayedWorkQueue实现，DelayedWorkQueue类似
 因为在多核CPU环境下，每个CPU有自己的寄存器和缓存，所以每个线程在工作时优先读取和写入的数据均发生在CPU缓存中，也就是JVM内存模型中定义的工作内存，volatile关键字保证了所有线程都基于物理内存进行读写，也就是基于JVM内存模型的主内存。  
 2）有序性  
 volatile变量的第二个语义就是禁止指令重排。Java内存模型定义了一种线程内表现为串行的语义，即普通变量只能保证在线程内执行最终结果是正确的，不能保证执行顺序。volatile变量通过内存屏障，禁止重排序时把后面的指令重排到内存屏障之前，从而保证有序性。  
-## **12.jdk命令行工具**
+## **12.死锁**
+死锁产生的四个条件：1）互斥，每个资源只能被一个线程同时占用；2）持有并等待，线程持有资源而且在等待其他线程释放资源；3）不可抢占，每个线程占有的资源无法被其他线程抢占；4）环路等待，发生死锁时必然存在一个资源-线程的闭环  
+jvm自带检测死锁命令：jstack用于生成虚拟机当前时刻线程快照；jps类似Unix的ps主要打印出java进程；jmap主要用于dump 虚拟机内存快照；  
+
+
+
