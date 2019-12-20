@@ -1,8 +1,13 @@
 # java-interview  
 ## **1.kafka高性能架构原理分析**  
 https://juejin.im/post/5cc00ac95188250a59405322  
+总结：对于生产者，主要利用了数据压缩节省了接口请求次数和kafak的有序性，对磁盘就行顺序读写；  
+      对于消费者主要是利用了零拷贝技术，零拷贝技术相关文档  
+      http://sound2gd.wang/2018/07/24/Java-NIO%E5%88%86%E6%9E%90-11-%E9%9B%B6%E6%8B%B7%E8%B4%9D%E6%8A%80%E6%9C%AF/   
 ## **2.谈一谈Jetty 对Jetty的整体认识**  
 https://www.jianshu.com/p/c8282a4c4b04  
+关于JAVA NIO与BIO的相关文档  
+https://tech.meituan.com/2016/11/04/nio.html  
 ## **3.详解 Eureka 缓存机制**  
 https://www.infoq.cn/article/y_1BCrbLONU61s1gbGsU  
 ## **4.Eureka+Ribbon架构下如何实时下线服务通知调用方**  
