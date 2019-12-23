@@ -617,3 +617,9 @@ jvm自带检测死锁命令：jstack用于生成虚拟机当前时刻线程快�
 HashMap:基于拉链法实现，拉链的主要结构是数组，数组的每个元素是一个单链表的表头，通过对Key的hash值取模计算Key在数组中的位置，如果该位置已经存在元素则对Key值进行判断，相等则更新value，否则将Key值放入单链表的尾节点，因为在单链表中查询数据的复杂度是O(N),所以在链表长度超过一定阈值后，链表将转化为红黑树，时间复杂度为O(lOG2(n))  
 ConCurrentHashMap:在JDK7，ConCurrentHashMap是基于Segment实现的，Segment继承ReentrantLock,只有对Hash值在Segment中的Key操作时，才会锁定对应Segment的数组，在segment内部才使用ReentrantLock.lock,因此ConCurrentHashMap是线程安全的，且比HashTable效率高。JDK8中取消了segment，转而通过CAS确保线程安全。  
 HashTable:HashTable将整个拉链的数组全部锁住，在主要的方法上都是使用synchronized进行修饰，因此HashTable是线程安全的。  
+
+## **14.Java基础**
+浅拷贝：对基本数据类型进行值传递，对引用数据类型进行引用传递般的拷贝，此为浅拷贝。
+深拷贝：对基本数据类型进行值传递，对引用数据类型，创建一个新的对象，并复制其内容，此为深拷贝。
+字节流：普通的二进制流，读出来的是bit
+字符流:在字节流的基础按照字符编码处理，处理的是char
