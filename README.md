@@ -613,4 +613,7 @@ volatile变量的第二个语义就是禁止指令重排。Java内存模型定�
 jvm自带检测死锁命令：jstack用于生成虚拟机当前时刻线程快照；jps类似Unix的ps主要打印出java进程；jmap主要用于dump 虚拟机内存快照；  
 
 
-
+## **13.HashMap，ConCurrentHashMap,HashTable实现原理**
+HashMap:基于拉链法实现，拉链的主要结构是数组，数组的每个元素是一个单链表的表头，通过对Key的hash值取模计算Key在数组中的位置，如果该位置已经存在元素则对Key值进行判断，相等则更新value，否则将Key值放入单链表的尾节点，因为在单链表中查询数据的复杂度是O(N),所以在链表长度超过一定阈值后，链表将转化为红黑树，时间复杂度为O(lOG2(n))  
+ConCurrentHashMap:在JDK7，ConCurrentHashMap是基于Segment实现的，Segment继承ReentrantLock,只有对Hash值在Segment中的Key操作时，才会锁定对应Segment的数组，在segment内部才使用ReentrantLock.lock,因此ConCurrentHashMap是线程安全的，且比HashTable效率高。JDK8中取消了segment，转而通过CAS确保线程安全。  
+HashTable:HashTable将整个拉链的数组全部锁住，在主要的方法上都是使用synchronized进行修饰，因此HashTable是线程安全的。  
