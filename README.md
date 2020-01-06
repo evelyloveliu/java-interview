@@ -499,7 +499,8 @@ public void execute(Runnable command) {
         w.unlock(); // allow interrupts
         boolean completedAbruptly = true;
         try {
-            //当添加work时task!=null 所以work在添加时启动后立刻执行提交的任务
+            //当添加work时task!=null 所以work在添加时启动后立刻执行提交的任务,当workQueue没有任务，且当前线程数小于corePoolSize时
+            //线程将在getTask中阻塞挂起
             while (task != null || (task = getTask()) != null) {
                 w.lock();
                 // If pool is stopping, ensure thread is interrupted;
@@ -536,6 +537,45 @@ public void execute(Runnable command) {
             completedAbruptly = false;
         } finally {
             processWorkerExit(w, completedAbruptly);
+        }
+    }
+    
+     private Runnable getTask() {
+        boolean timedOut = false; // Did the last poll() time out?
+        //自旋，直至拿到任务或者超时
+        for (;;) {
+            int c = ctl.get();
+            int rs = runStateOf(c);
+
+            // Check if queue empty only if necessary.
+            if (rs >= SHUTDOWN && (rs >= STOP || workQueue.isEmpty())) {
+                decrementWorkerCount();
+                return null;
+            }
+
+            int wc = workerCountOf(c);
+
+            // Are workers subject to culling?
+            boolean timed = allowCoreThreadTimeOut || wc > corePoolSize;
+
+            if ((wc > maximumPoolSize || (timed && timedOut))
+                && (wc > 1 || workQueue.isEmpty())) {
+                if (compareAndDecrementWorkerCount(c))
+                    return null;
+                continue;
+            }
+
+            try {
+                //挂起
+                Runnable r = timed ?
+                    workQueue.poll(keepAliveTime, TimeUnit.NANOSECONDS) :
+                    workQueue.take();
+                if (r != null)
+                    return r;
+                timedOut = true;
+            } catch (InterruptedException retry) {
+                timedOut = false;
+            }
         }
     }
 ```
