@@ -677,6 +677,9 @@ newFixedthreadPool:固定大小线程池，使用LinkedBlockingQueue,无界队�
 newSingleThreadPool:单个线程线程池，同样使用LinkedBlockingQueue,只有一个线程执行任务;  
 newCachedThreadPool:无限大小线程池，使用SynchronousQueue;
 拒绝策略：1）拒绝执行，抛出异常；2）直接丢弃；3)当前线程执行任务；4）丢弃任务队列中头任务  
-任务队列：有界队列：ArrayBlockingQueue,SynchronousQueue;无界队列：LinkedBlockingQueue;
+任务队列：有界队列：ArrayBlockingQueue,SynchronousQueue;无界队列：LinkedBlockingQueue;  
+
+## **15.TCP拆包沾包问题**
+https://www.v2ex.com/t/478610?p=2
                         
 
