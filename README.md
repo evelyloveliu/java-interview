@@ -671,5 +671,12 @@ LinkedList与ArrayList区别：LinkedList基于双向链表实现，ArrayList基
 jvm new一个对象的过程：jvm当遇到new指令时，首先会去方法区的运行时常量池定位一个类的符号引用，并检查这个符号引用代表的类是否已经加载，解析和初始化过，如果没有将先执行类加载过程，类加载检查通过后，jvm将为对象分配内存，分配方式（指针碰撞和空闲列表）取决于内存分布，内存分布取决于GC器，
 分配内存后将进行初始化零值，然后进行对象头设置，最好执行程序员指定的init方法。  
 jvm 对象内存布局：对象头（包含运行时数据如hash码，GC年龄，锁状态，和类型指针，告知jvm当前对象是哪个类的实例），实例数据（真正存储数据的地方），对齐填充  
-
+线程生命周期： 新建(new一个线程)-->就绪（thread.start()）-->运行（获取CPU时间，开始执行RUN，当无法获取到CPU时间则阻塞）-->死亡（RUN执行完毕或者抛出异常）  
+线程池：  
+newFixedthreadPool:固定大小线程池，使用LinkedBlockingQueue,无界队列，最大任务大小为Integer.MAX;  
+newSingleThreadPool:单个线程线程池，同样使用LinkedBlockingQueue,只有一个线程执行任务;  
+newCachedThreadPool:无限大小线程池，使用SynchronousQueue;
+拒绝策略：1）拒绝执行，抛出异常；2）直接丢弃；3)当前线程执行任务；4）丢弃任务队列中头任务  
+任务队列：有界队列：ArrayBlockingQueue,SynchronousQueue;无界队列：LinkedBlockingQueue;
+                        
 
