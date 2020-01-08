@@ -30,6 +30,7 @@ MongoDB 的适用场景为：数据不是特别重要（例如通知，推送这
 1）IO多路复用： https://blog.csdn.net/u014590757/article/details/79860766  
 2）支持数据类型：String,List,Hash,Set,SortedSet,3.2版本以后支持bitmap,GEO地理位置数据  
 3）底层数据结构：链表，简单字符串，跳表，字典，压缩列表，整数集合  
+4）数据库缓存双写一致性问题：https://www.cnblogs.com/rjzheng/p/9041659.html  
 ## **7.JAVA代理模式**  
 ### 1）静态代理：  
 静态代理需要代理类与实现类实现相同的接口，需要手动编码  
