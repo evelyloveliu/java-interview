@@ -26,8 +26,10 @@ https://www.jianshu.com/p/07c2e0d59dc9
 3）底层InnoDB采用B+树存储  
 总结一下：  
 MongoDB 的适用场景为：数据不是特别重要（例如通知，推送这些），数据表结构变化较为频繁，数据量特别大，数据的并发性特别高，数据结构比较特别（例如地图的位置坐标），这些情况下用 MongoDB ， 其他情况就还是用 MySQL ，这样组合使用就可以达到最大的效率  
-## **6.Redis多路IO复用**  
-https://blog.csdn.net/u014590757/article/details/79860766  
+## **6.Redis**  
+1）IO多路复用： https://blog.csdn.net/u014590757/article/details/79860766  
+2）支持数据类型：String,List,Hash,Set,SortedSet,3.2版本以后支持bitmap,GEO地理位置数据  
+3）底层数据结构：链表，简单字符串，跳表，字典，压缩列表，整数集合  
 ## **7.JAVA代理模式**  
 ### 1）静态代理：  
 静态代理需要代理类与实现类实现相同的接口，需要手动编码  
