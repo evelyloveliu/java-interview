@@ -73,6 +73,9 @@ MySQL ACID实现原理：原子性基于undo log；持久性基于redo log和刷
 快照读：基于MVCC机制实现，在不加锁的情况下，访问的是当前事务查询的快照版本，可重复读是这一功能的体现。  
 当前读：select for update,update,insert,delete是读取当前数据库中最新的数据，需要加锁。  
 MVCC机制：基于版本号的一种数据控制。  
+行锁：锁定部分行数据，效率低，冲突少，可能会产生死锁；  
+间隙锁：锁定未产生的数据，避免幻读；  
+表锁：在锁定条件没有索引的情况下，行锁将升级为表锁；  
 
 ## **9.Synchronized实现原理以及JDK1.6的优化**  
 1）Synchronized是通过JVM的monitor实现的。Synchronized在修饰方法时class文件通过ACC_SYNCHRONIZED 标识来判断该方法是不是同步方法，是否需要获取monitor锁，同步其他资源时，class文件通过monitorenter和monitorexit来标注同步代码块，告知JVM需要获取对应的monitor锁。  
