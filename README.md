@@ -711,4 +711,18 @@ newCachedThreadPool:无限大小线程池，使用SynchronousQueue;
 ## **15.TCP拆包沾包问题**
 https://www.v2ex.com/t/478610?p=2
                         
+## **16.Spring**
+Spring bean生命周期：
+
+
+spring事务传播机制：  
+1）PROPAGATION_REQUIRES：默认机制，方法必须在一个事务中运行，如果当前存在事务则加入当前事务，如果当前不存在事务，则新建一个事务；  
+2）PROPAGATION_REQUIRES_NEW：表示方法必须在自己的事务中运行，如果当前存在事务，则挂起当前事务，开启一个新的事务；  
+3）PROPAGATION_SUPPORT：表示当前方法不需要运行在事务中，如果当前存在事务，则加入事务； 
+4）PROPAGATION_NOT_SUPPORT:表示方法不支持事务，如果当前存在事务，则将当前事务挂起；  
+5）PROPAGATION_NOT_NEVER:表示方法不能运行在事务中，如果当前存在事务，则抛出异常；  
+6）PROPAGATION_MANDATORY:表示方法必须在事务中运行，如果不存在事务则抛出异常；  
+7）PROPAGATION_NESTED:表示当前如果存在事务，则加入嵌套事务，如果当前不存在事务则与PROPAGATION_REQUIRES一致；  
+PROPAGATION_NESTED与PROPAGATION_REQUIRES_NEW的区别：PROPAGATION_NESTED是嵌套事务，子事务rollback，父事务可以commit或rollback，但是父事务rollback则子事务必然rollback，PROPAGATION_REQUIRES_NEW则是开启了新事务，里面的事务执行，外面的事务挂起； 
+
 
