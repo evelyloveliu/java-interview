@@ -712,9 +712,7 @@ newCachedThreadPool:无限大小线程池，使用SynchronousQueue;
 https://www.v2ex.com/t/478610?p=2
                         
 ## **16.Spring**
-Spring bean生命周期：
-
-
+![Spring bean生命周期](https://github.com/evelyloveliu/java-interview/raw/master/15359386381747.jpg)
 spring事务传播机制：  
 1）PROPAGATION_REQUIRES：默认机制，方法必须在一个事务中运行，如果当前存在事务则加入当前事务，如果当前不存在事务，则新建一个事务；  
 2）PROPAGATION_REQUIRES_NEW：表示方法必须在自己的事务中运行，如果当前存在事务，则挂起当前事务，开启一个新的事务；  
