@@ -403,10 +403,10 @@ private int dowait(boolean timed, long nanos)
     }
 ```
 5）线程池主要概念以及原理
-corePoolSize:线程池核心线程数量（当前线程数量小于corePoolSize且都在处理任务，如果此时有新任务则直接创建一个线程执行任务）  
-maximumPoolSize:线程池最大线程数量（当前线程数量大于corePoolSize，小于maximunPoolSize时，如果此时有新任务则直接创建一个线程执行任务，如果当前线程数量大于corePoolSize，但是出于空闲，则回收部分线程，将线程数量控制到corePoolSize）  
+corePoolSize:线程池核心线程数量（当前线程数量小于corePoolSize，如果此时有新任务则直接创建一个线程执行任务）  
+maximumPoolSize:线程池最大线程数量（当前线程数量大于corePoolSize，且等待队列满时，如果此时有新任务则直接创建一个线程执行任务，如果当前线程数量大于corePoolSize，但是出于空闲，则回收部分线程，将线程数量控制到corePoolSize）  
 keepAliveTime:当前线程大于corePoolSize小于maximumPoolSize时，空闲线程的存活时间  
-workQueue:用于保存待执行任务的阻塞队列（当前线程池线程数量以达到maximumPoolSize且都出于工作状态，此时有任务进入线程池，则任务会进入workQueue中）  
+workQueue:用于保存待执行任务的阻塞队列（当前线程池线程数量以达到corePoolSize且都出于工作状态，此时有任务进入线程池，则任务会进入workQueue中）  
 RejectedExecutionHandler:饱和策略（当workQueue满且线程数达到maximunPooSize,将会触发饱和策略列）  
 线程池主要解决两个问题:是当执行大量异步任务时线程池能够提供较好的性能,在不使用线程池时，每当需要执行异步任务时直接 new 个线程来运行，而线程的创建和销毁是 要开销的 线程池里面的线程是可复用的 ，不需要每次执行异步任务时都重新创建和销毁线程。二是线程 也提供了 种资源限制和管理的手段，比如可以限制线程的个数，动态新增线程等  
 线程池核心代码
